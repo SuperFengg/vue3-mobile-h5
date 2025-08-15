@@ -1,0 +1,147 @@
+// Vant 主题定制变量
+// 基础颜色 - 使用CSS变量支持动态主题
+:root {
+  // 主色调
+  --van-primary-color: var(--color-primary, #1989fa);
+  --van-success-color: var(--color-success, #07c160);
+  --van-danger-color: var(--color-danger, #ee0a24);
+  --van-warning-color: var(--color-warning, #ff976a);
+  --van-info-color: var(--color-info, #1989fa);
+
+  // 文本颜色
+  --van-text-color: var(--color-text-primary, #323233);
+  --van-text-color-2: var(--color-text-secondary, #646566);
+  --van-text-color-3: var(--color-text-tertiary, #969799);
+
+  // 背景颜色
+  --van-background-color: var(--color-background, #f7f8fa);
+  --van-background-color-light: var(--color-background-light, #fafafa);
+  --van-white: var(--color-surface, #fff);
+
+  // 边框颜色
+  --van-border-color: var(--color-border, #ebedf0);
+  --van-border-color-light: var(--color-border-light, #f2f3f5);
+
+  // 字体大小
+  --van-font-size-xs: 10px;
+  --van-font-size-sm: 12px;
+  --van-font-size-md: 14px;
+  --van-font-size-lg: 16px;
+  --van-font-size-xl: 18px;
+
+  // 间距
+  --van-padding-base: 4px;
+  --van-padding-xs: 8px;
+  --van-padding-sm: 12px;
+  --van-padding-md: 16px;
+  --van-padding-lg: 24px;
+  --van-padding-xl: 32px;
+
+  // 圆角
+  --van-border-radius-sm: 2px;
+  --van-border-radius-md: 4px;
+  --van-border-radius-lg: 8px;
+  --van-border-radius-max: 999px;
+
+  // 动画时间
+  --van-animation-duration-base: 0.3s;
+  --van-animation-duration-fast: 0.2s;
+  --van-animation-timing-function-enter: ease-out;
+  --van-animation-timing-function-leave: ease-in;
+
+  // 组件特定样式
+  --van-button-primary-background-color: var(--van-primary-color);
+  --van-button-primary-border-color: var(--van-primary-color);
+  --van-button-default-height: 44px;
+  --van-button-large-height: 50px;
+  --van-button-small-height: 32px;
+  --van-button-mini-height: 24px;
+
+  // Toast（避免出现白色背景）
+  --van-toast-background: rgba(0, 0, 0, 0.8);
+  --van-toast-text-color: #fff;
+  --van-toast-loading-icon-color: #fff;
+  --van-toast-icon-size: clamp(28px, 0.8rem, 40px);
+
+  // 全局图标基准尺寸（自适应，随 rem 缩放并限定上下界）
+  --app-icon-size: clamp(14px, 0.44rem, 18px);
+
+  // NavBar
+  --van-nav-bar-height: 46px;
+  --van-nav-bar-background-color: var(--van-white);
+  --van-nav-bar-arrow-size: 16px;
+  --van-nav-bar-icon-color: var(--van-primary-color);
+  --van-nav-bar-text-color: var(--van-primary-color);
+  --van-nav-bar-title-font-size: var(--van-font-size-lg);
+  --van-nav-bar-title-text-color: var(--van-text-color);
+
+  // Tabbar
+  --van-tabbar-height: 50px;
+  --van-tabbar-background-color: var(--van-white);
+  --van-tabbar-item-font-size: var(--van-font-size-sm);
+  --van-tabbar-item-text-color: var(--van-text-color-2);
+  --van-tabbar-item-active-color: var(--van-primary-color);
+  --van-tabbar-item-active-background-color: var(--van-white);
+
+  // Cell
+  --van-cell-font-size: var(--van-font-size-md);
+  --van-cell-line-height: 24px;
+  --van-cell-vertical-padding: 10px;
+  --van-cell-horizontal-padding: var(--van-padding-md);
+  --van-cell-text-color: var(--van-text-color);
+  --van-cell-background-color: var(--van-white);
+  --van-cell-border-color: var(--van-border-color);
+  --van-cell-active-color: var(--van-background-color);
+  --van-cell-required-color: var(--van-danger-color);
+  --van-cell-label-color: var(--van-text-color-2);
+  --van-cell-label-font-size: var(--van-font-size-sm);
+  --van-cell-label-line-height: var(--van-font-size-sm);
+  --van-cell-label-margin-top: 3px;
+  --van-cell-value-color: var(--van-text-color-2);
+  --van-cell-icon-size: 16px;
+  --van-cell-right-icon-color: var(--van-text-color-3);
+  --van-cell-large-vertical-padding: var(--van-padding-sm);
+  --van-cell-large-title-font-size: var(--van-font-size-lg);
+  --van-cell-large-label-font-size: var(--van-font-size-md);
+
+  // Field
+  --van-field-label-width: 6.2em;
+  --van-field-label-color: var(--van-text-color);
+  --van-field-label-margin-right: var(--van-padding-sm);
+  --van-field-input-text-color: var(--van-text-color);
+  --van-field-input-error-text-color: var(--van-danger-color);
+  --van-field-input-disabled-text-color: var(--van-text-color-3);
+  --van-field-placeholder-text-color: var(--van-text-color-3);
+  --van-field-icon-size: 16px;
+  --van-field-clear-icon-size: 16px;
+  --van-field-clear-icon-color: var(--van-text-color-3);
+  --van-field-right-icon-color: var(--van-text-color-3);
+  --van-field-error-message-color: var(--van-danger-color);
+  --van-field-error-message-text-color: var(--van-danger-color);
+  --van-field-text-area-min-height: 60px;
+  --van-field-word-limit-color: var(--van-text-color-3);
+  --van-field-word-num-full-color: var(--van-danger-color);
+  --van-field-disabled-text-color: var(--van-text-color-3);
+}
+
+/* 强制覆盖 Toast 背景与文本颜色，避免出现白框 */
+:root .van-toast {
+  color: var(--van-toast-text-color) !important;
+}
+
+:root .van-toast--text,
+:root .van-toast--success,
+:root .van-toast--fail,
+:root .van-toast--loading {
+  background: var(--van-toast-background) !important;
+}
+
+/* 提升覆盖优先级：在 Toast 组件根上再次声明变量，确保高于库内 :root 值 */
+.van-toast {
+  --van-toast-icon-size: clamp(28px, 0.8rem, 40px);
+}
+
+/* 直接覆盖库内 .van-icon 的 font-size: inherit，确保按我们变量生效 */
+.van-toast .van-icon {
+  font-size: var(--van-toast-icon-size) !important;
+}

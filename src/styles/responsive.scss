@@ -1,0 +1,206 @@
+/**
+ * 响应式断点样式
+ */
+
+// 断点定义
+$breakpoint-xs: 480px;
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+$breakpoint-xxl: 1600px;
+
+// 简化的媒体查询混入
+@mixin media-up($breakpoint) {
+  @if $breakpoint == xs {
+    @media (min-width: $breakpoint-xs) {
+      @content;
+    }
+  } @else if $breakpoint == sm {
+    @media (min-width: $breakpoint-sm) {
+      @content;
+    }
+  } @else if $breakpoint == md {
+    @media (min-width: $breakpoint-md) {
+      @content;
+    }
+  } @else if $breakpoint == lg {
+    @media (min-width: $breakpoint-lg) {
+      @content;
+    }
+  } @else if $breakpoint == xl {
+    @media (min-width: $breakpoint-xl) {
+      @content;
+    }
+  } @else if $breakpoint == xxl {
+    @media (min-width: $breakpoint-xxl) {
+      @content;
+    }
+  }
+}
+
+@mixin media-down($breakpoint) {
+  @if $breakpoint == xs {
+    @media (max-width: $breakpoint-xs - 1px) {
+      @content;
+    }
+  } @else if $breakpoint == sm {
+    @media (max-width: $breakpoint-sm - 1px) {
+      @content;
+    }
+  } @else if $breakpoint == md {
+    @media (max-width: $breakpoint-md - 1px) {
+      @content;
+    }
+  } @else if $breakpoint == lg {
+    @media (max-width: $breakpoint-lg - 1px) {
+      @content;
+    }
+  } @else if $breakpoint == xl {
+    @media (max-width: $breakpoint-xl - 1px) {
+      @content;
+    }
+  } @else if $breakpoint == xxl {
+    @media (max-width: $breakpoint-xxl - 1px) {
+      @content;
+    }
+  }
+}
+
+@mixin media-between($lower, $upper) {
+  @if $lower == xs and $upper == sm {
+    @media (min-width: $breakpoint-xs) and (max-width: $breakpoint-sm - 1px) {
+      @content;
+    }
+  } @else if $lower == sm and $upper == md {
+    @media (min-width: $breakpoint-sm) and (max-width: $breakpoint-md - 1px) {
+      @content;
+    }
+  } @else if $lower == md and $upper == lg {
+    @media (min-width: $breakpoint-md) and (max-width: $breakpoint-lg - 1px) {
+      @content;
+    }
+  } @else if $lower == lg and $upper == xl {
+    @media (min-width: $breakpoint-lg) and (max-width: $breakpoint-xl - 1px) {
+      @content;
+    }
+  } @else if $lower == xl and $upper == xxl {
+    @media (min-width: $breakpoint-xl) and (max-width: $breakpoint-xxl - 1px) {
+      @content;
+    }
+  }
+}
+
+@mixin media-only($breakpoint) {
+  @if $breakpoint == xs {
+    @include media-down(sm) {
+      @content;
+    }
+  } @else if $breakpoint == sm {
+    @include media-between(sm, md) {
+      @content;
+    }
+  } @else if $breakpoint == md {
+    @include media-between(md, lg) {
+      @content;
+    }
+  } @else if $breakpoint == lg {
+    @include media-between(lg, xl) {
+      @content;
+    }
+  } @else if $breakpoint == xl {
+    @include media-between(xl, xxl) {
+      @content;
+    }
+  } @else if $breakpoint == xxl {
+    @include media-up(xxl) {
+      @content;
+    }
+  }
+}
+
+// 容器最大宽度
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 16px;
+
+  @include media-up(sm) {
+    max-width: 540px;
+  }
+
+  @include media-up(md) {
+    max-width: 720px;
+  }
+
+  @include media-up(lg) {
+    max-width: 960px;
+  }
+
+  @include media-up(xl) {
+    max-width: 1140px;
+  }
+
+  @include media-up(xxl) {
+    max-width: 1320px;
+  }
+}
+
+// 移动端优先的显示/隐藏
+.d-mobile-only {
+  @include media-up(md) {
+    display: none !important;
+  }
+}
+
+.d-desktop-only {
+  @include media-down(md) {
+    display: none !important;
+  }
+}
+
+// 响应式文字大小
+.text-responsive {
+  font-size: 14px;
+
+  @include media-up(sm) {
+    font-size: 15px;
+  }
+
+  @include media-up(md) {
+    font-size: 16px;
+  }
+
+  @include media-up(lg) {
+    font-size: 17px;
+  }
+
+  @include media-up(xl) {
+    font-size: 18px;
+  }
+}
+
+// 移动端和PC端一致性样式
+.mobile-pc-consistent {
+  // 确保在不同设备上的一致性
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  // 移动端触摸优化
+  @include media-down(md) {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  // PC端鼠标交互优化
+  @include media-up(md) {
+    cursor: pointer;
+
+    &:hover {
+      transition: all 0.2s ease;
+    }
+  }
+}

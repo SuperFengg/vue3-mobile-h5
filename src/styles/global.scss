@@ -1,0 +1,295 @@
+@import './variables.scss';
+@import './mixins.scss';
+@import './themes.scss';
+@import './responsive.scss';
+
+// 全局重置样式
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 37.5px; // 设置根字体大小，配合rem适配
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    'Helvetica Neue',
+    Helvetica,
+    Segoe UI,
+    Arial,
+    Roboto,
+    'PingFang SC',
+    'miui',
+    'Hiragino Sans GB',
+    'Microsoft Yahei',
+    sans-serif;
+  font-size: $font-size-md;
+  color: $text-color;
+  background-color: $background-color;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// 移动端适配
+#app {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+}
+
+// 通用工具类
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  @include center;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex-around {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+// 间距工具类
+.m-xs {
+  margin: $padding-xs;
+}
+.mt-xs {
+  margin-top: $padding-xs;
+}
+.mb-xs {
+  margin-bottom: $padding-xs;
+}
+.ml-xs {
+  margin-left: $padding-xs;
+}
+.mr-xs {
+  margin-right: $padding-xs;
+}
+.p-xs {
+  padding: $padding-xs;
+}
+.pt-xs {
+  padding-top: $padding-xs;
+}
+.pb-xs {
+  padding-bottom: $padding-xs;
+}
+.pl-xs {
+  padding-left: $padding-xs;
+}
+.pr-xs {
+  padding-right: $padding-xs;
+}
+
+.m-sm {
+  margin: $padding-sm;
+}
+.mt-sm {
+  margin-top: $padding-sm;
+}
+.mb-sm {
+  margin-bottom: $padding-sm;
+}
+.ml-sm {
+  margin-left: $padding-sm;
+}
+.mr-sm {
+  margin-right: $padding-sm;
+}
+.p-sm {
+  padding: $padding-sm;
+}
+.pt-sm {
+  padding-top: $padding-sm;
+}
+.pb-sm {
+  padding-bottom: $padding-sm;
+}
+.pl-sm {
+  padding-left: $padding-sm;
+}
+.pr-sm {
+  padding-right: $padding-sm;
+}
+
+.m-md {
+  margin: $padding-md;
+}
+.mt-md {
+  margin-top: $padding-md;
+}
+.mb-md {
+  margin-bottom: $padding-md;
+}
+.ml-md {
+  margin-left: $padding-md;
+}
+.mr-md {
+  margin-right: $padding-md;
+}
+.p-md {
+  padding: $padding-md;
+}
+.pt-md {
+  padding-top: $padding-md;
+}
+.pb-md {
+  padding-bottom: $padding-md;
+}
+.pl-md {
+  padding-left: $padding-md;
+}
+.pr-md {
+  padding-right: $padding-md;
+}
+
+.m-lg {
+  margin: $padding-lg;
+}
+.mt-lg {
+  margin-top: $padding-lg;
+}
+.mb-lg {
+  margin-bottom: $padding-lg;
+}
+.ml-lg {
+  margin-left: $padding-lg;
+}
+.mr-lg {
+  margin-right: $padding-lg;
+}
+.p-lg {
+  padding: $padding-lg;
+}
+.pt-lg {
+  padding-top: $padding-lg;
+}
+.pb-lg {
+  padding-bottom: $padding-lg;
+}
+.pl-lg {
+  padding-left: $padding-lg;
+}
+.pr-lg {
+  padding-right: $padding-lg;
+}
+
+.m-xl {
+  margin: $padding-xl;
+}
+.mt-xl {
+  margin-top: $padding-xl;
+}
+.mb-xl {
+  margin-bottom: $padding-xl;
+}
+.ml-xl {
+  margin-left: $padding-xl;
+}
+.mr-xl {
+  margin-right: $padding-xl;
+}
+.p-xl {
+  padding: $padding-xl;
+}
+.pt-xl {
+  padding-top: $padding-xl;
+}
+.pb-xl {
+  padding-bottom: $padding-xl;
+}
+.pl-xl {
+  padding-left: $padding-xl;
+}
+.pr-xl {
+  padding-right: $padding-xl;
+}
+
+// 文本工具类
+.ellipsis {
+  @include ellipsis;
+}
+
+.multi-ellipsis-2 {
+  @include multi-ellipsis(2);
+}
+
+.multi-ellipsis-3 {
+  @include multi-ellipsis(3);
+}
+
+// 颜色工具类
+.text-primary {
+  color: $primary-color;
+}
+
+.text-success {
+  color: $success-color;
+}
+
+.text-warning {
+  color: $warning-color;
+}
+
+.text-danger {
+  color: $danger-color;
+}
+
+.text-muted {
+  color: $text-color-3;
+}
+
+// 背景工具类
+.bg-white {
+  background-color: $white;
+}
+
+.bg-light {
+  background-color: $background-color-light;
+}
+
+// 安全区域适配
+.safe-area-top {
+  @include safe-area-insets(padding, top);
+}
+
+.safe-area-bottom {
+  @include safe-area-insets(padding, bottom);
+}

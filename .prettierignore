@@ -1,0 +1,7 @@
+dist
+node_modules
+.husky
+*.min.js
+*.min.css
+public
+coverage
