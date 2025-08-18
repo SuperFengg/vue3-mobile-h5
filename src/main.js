@@ -27,6 +27,7 @@ import { initializeServices } from './services'
 
 // 导入主题管理器
 import { ThemePlugin } from './utils/theme'
+import { EventBusPlugin } from './utils/eventBus'
 
 // 导入全局样式
 import './styles/global.scss'
@@ -47,6 +48,8 @@ installComponents(app)
 
 // 注册主题插件
 app.use(ThemePlugin)
+// 注册事件总线插件
+app.use(EventBusPlugin)
 
 // 设置全局错误处理
 setupErrorHandler(app)

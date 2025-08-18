@@ -61,6 +61,313 @@ git clone <repository-url>
 cd vue3-mobile-h5
 ```
 
+## 🧭 业务开发指南
+
+### 路由与页面
+
+- 新增页面：在 `src/views` 新建页面组件，并在 `src/router/index.js` 中配置路由；支持 `meta.title`、`meta.keepAlive`、`meta.requiresAuth` 等。
+
+```js
+// 示例：受保护的页面
+{
+  path: '/orders',
+  name: 'Orders',
+  component: () => import('@/views/Orders.vue'),
+  meta: { title: '我的订单', requiresAuth: true, keepAlive: true }
+}
+
+// 在全局前置守卫里按需拦截（示例，实际逻辑请自行完善）
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth && !useUserStore().isLoggedIn) {
+    next('/login')
+    return
+  }
+  next()
+})
+```
+
+### 状态管理（Pinia）
+
+- 应用层 `useAppStore`：全局 loading、主题、语言、网络状态、设备信息等。
+
+```js
+import { useAppStore } from '@/stores'
+const app = useAppStore()
+app.setLoading(true)
+app.setTheme('dark')
+console.log(app.isDarkMode)
+```
+
+- 用户层 `useUserStore`：登录、退出、权限、偏好设置等。
+
+```js
+import { useUserStore } from '@/stores'
+const user = useUserStore()
+const { success, error } = await user.login({ username: 'demo', password: '123456' })
+if (success) {
+  console.log(user.userInfo, user.token)
+} else {
+  console.error(error)
+}
+```
+
+- 数据层 `useDataStore`：通用缓存/列表分页/加载态/错误态管理，适配任意请求函数。
+
+```js
+import { useDataStore } from '@/stores'
+import { productApi } from '@/services'
+
+const dataStore = useDataStore()
+
+// 缓存数据型
+const product = await dataStore.fetchData('product:1', () => productApi.getProductDetail(1), {
+  useCache: true,
+  ttl: 5 * 60 * 1000,
+})
+
+// 列表分页型
+await dataStore.fetchListData(
+  'product:list',
+  ({ page, pageSize }) => productApi.getProductList({ page, pageSize }),
+  { page: 1, pageSize: 10 }
+)
+
+// 加载更多
+await dataStore.loadMore('product:list', ({ page, pageSize }) =>
+  productApi.getProductList({ page, pageSize })
+)
+```
+
+### 请求与 API
+
+- 直接使用 `http`（封装 axios）：统一拦截、错误处理、取消/上传/下载、标准化结果。
+
+```js
+import { http } from '@/services'
+const list = await http.get('/products', { page: 1 })
+const created = await http.post('/user', { name: 'John' })
+```
+
+- 使用领域 API：`src/services/api/*` 已按功能拆分。
+
+```js
+import { userApi, productApi, commonApi } from '@/services'
+await userApi.login({ username: 'demo', password: '123456' })
+const { data, total } = await productApi.getProductReviews(1, { page: 1 })
+await commonApi.uploadFile(file)
+```
+
+- 取消重复请求与页面切换取消：已内置 `RequestCanceler`，无需手动处理。
+
+### 全局反馈（Vant 二次封装）
+
+`src/config/vant.js` 暴露便捷方法：
+
+```js
+import { toast, dialog, notify, imagePreview } from '@/config/vant'
+
+toast.show('操作成功')
+toast.success('保存成功')
+toast.fail('请求失败')
+const hide = toast.loading('提交中...') // hide.close() 手动关闭
+
+await dialog.confirm({ title: '提示', message: '确定删除吗？' })
+notify.warning('网络不稳定')
+imagePreview.show(['https://.../1.png', 'https://.../2.png'])
+```
+
+### 主题（亮/暗 + 自定义）
+
+```js
+import { useTheme } from '@/utils/theme'
+const { setTheme, toggleTheme, currentTheme, getThemeColor } = useTheme()
+setTheme('dark')
+toggleTheme()
+console.log(currentTheme.value, getThemeColor('primary'))
+```
+
+可在 `src/styles/themes.scss` 定义/覆盖 CSS 变量，或在运行时通过 `useTheme()` 读取颜色。
+
+### 事件总线（全局发布/订阅）
+
+已在 `main.js` 注入插件，支持 `$bus` 与组合式 API：
+
+```js
+// 组合式（推荐）
+import { useEventBus } from '@/utils/eventBus'
+const { onEvent, onceEvent, emit } = useEventBus()
+
+const off = onEvent('user:updated', payload => {
+  console.log('用户更新', payload)
+})
+emit('user:updated', { id: 1 })
+off()
+
+// 全局（任意模块）
+import { eventBus } from '@/utils/eventBus'
+eventBus.emit('app:ready')
+```
+
+事件命名建议：`领域:动作`（如 `user:login`, `cart:updated`），载荷使用结构化对象。
+
+### 常用业务组件
+
+- `PageContainer`：统一导航栏/安全区/全局 loading 包裹。
+
+```vue
+<template>
+  <PageContainer title="商品列表" left-arrow :loading="loading">
+    <!-- 页面内容 -->
+  </PageContainer>
+  <template #tabbar>
+    <!-- 可放底部 Tabbar -->
+  </template>
+  }
+</template>
+```
+
+- `InfiniteList`：下拉刷新 + 滚动加载，直接对接接口或配合 `useDataStore`。
+
+```vue
+<template>
+  <InfiniteList :list="list" :fetch-data="fetchData" @refresh="onRefresh" @load-more="onLoadMore">
+    <template #default="{ item }">
+      <ProductCard :product="item" />
+    </template>
+  </InfiniteList>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import { productApi } from '@/services'
+const list = ref([])
+const fetchData = ({ page, pageSize }) => productApi.getProductList({ page, pageSize })
+const onRefresh = () => {}
+const onLoadMore = () => {}
+</script>
+```
+
+- `FormBuilder`：通过配置快速生成表单。
+
+```vue
+<script setup>
+import { ref } from 'vue'
+const form = ref({ username: '', gender: 'male', agree: false })
+const formConfig = [
+  {
+    title: '基本信息',
+    fields: [
+      {
+        type: 'input',
+        name: 'username',
+        label: '用户名',
+        rules: [{ required: true, message: '必填' }],
+      },
+      {
+        type: 'radio',
+        name: 'gender',
+        label: '性别',
+        options: [
+          { label: '男', value: 'male' },
+          { label: '女', value: 'female' },
+        ],
+      },
+      { type: 'switch', name: 'agree', label: '同意协议' },
+    ],
+  },
+]
+const submitting = ref(false)
+const handleSubmit = async values => {
+  submitting.value = true /* 提交 */
+  submitting.value = false
+}
+</script>
+
+<template>
+  <FormBuilder
+    v-model="form"
+    :form-config="formConfig"
+    :submitting="submitting"
+    @submit="handleSubmit"
+  />
+</template>
+```
+
+- 业务组件：`ProductCard`、`UserAvatar` 已封装常用交互与状态。
+
+```vue
+<UserAvatar :name="'张三'" clickable @click="info => console.log(info)" />
+<ProductCard :product="product" @add-cart="addToCart" />
+```
+
+### 响应式与移动适配
+
+- 基于 `lib-flexible` + `postcss-pxtorem` 自动转换，直接写 px 即可。
+- 工具函数：
+
+```js
+import {
+  getDevicePixelRatio,
+  setRootFontSize,
+  isWeChat,
+  disableZoom,
+  handleIOSSafeArea,
+} from '@/utils/flexible'
+setRootFontSize()
+disableZoom()
+handleIOSSafeArea()
+```
+
+- 断点工具：
+
+```js
+import {
+  breakpoints,
+  getCurrentBreakpoint,
+  matchBreakpoint,
+  watchBreakpointChange,
+} from '@/utils/responsive'
+console.log(breakpoints, getCurrentBreakpoint())
+watchBreakpointChange(bp => console.log('breakpoint:', bp))
+```
+
+### Mock 数据
+
+- 开发模式一键开启：`npm run dev:mock`。
+- 辅助生成器：`src/services/mock/index.js` 提供 `mockData`、`mockPaginatedResponse` 等，可在示例/演示页快速产出数据。
+
+### 环境变量（.env.\*）
+
+- `VITE_API_BASE_URL`：接口基础地址
+- `VITE_API_TIMEOUT`：请求超时（ms）
+- `VITE_ENABLE_MOCK`：是否启用 Mock（true/false）
+- `VITE_ENABLE_ERROR_REPORT`：是否启用错误上报（true/false）
+- `VITE_ERROR_REPORT_URL`：错误上报服务端 URL
+
+示例：
+
+```env
+VITE_API_BASE_URL=/api
+VITE_API_TIMEOUT=10000
+VITE_ENABLE_MOCK=false
+VITE_ENABLE_ERROR_REPORT=false
+VITE_ERROR_REPORT_URL=https://example.com/report
+```
+
+### 错误处理
+
+已在入口通过 `setupErrorHandler(app)` 注册全局处理：Vue 错误、资源加载、未捕获 Promise、路由错误等都会统一捕获与提示。
+
+```js
+import { reportError, createErrorBoundary } from '@/utils/errorHandler'
+
+// 手动上报
+reportError(new Error('业务异常'), { scene: 'order:submit', payload: form })
+
+// 错误边界（选项式用法，或在路由级包装）
+const ErrorBoundary = createErrorBoundary()
+```
+
 ### 安装依赖
 
 ```bash
@@ -232,8 +539,8 @@ toggleTheme()
 
 ```scss
 .container {
-  width: 375px;    // 转换为 10rem
-  height: 200px;   // 转换为 5.33rem
+  width: 375px; // 转换为 10rem
+  height: 200px; // 转换为 5.33rem
   font-size: 14px; // 转换为 0.37rem
 }
 ```
@@ -289,10 +596,7 @@ npm run dev:mock
 ```vue
 <template>
   <PageContainer title="页面标题" left-arrow>
-    <ProductCard 
-      :product="product" 
-      @click="handleClick"
-    />
+    <ProductCard :product="product" @click="handleClick" />
   </PageContainer>
 </template>
 ```
